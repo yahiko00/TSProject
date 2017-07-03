@@ -67,7 +67,6 @@ gulp.task("compile", () => {
             .pipe(gulpif(debug, sourcemaps.write()))
             .pipe(gulp.dest(dest)),
         tsResult.dts
-            .pipe(rename("index.d.ts"))
             .pipe(gulp.dest(dest))])
         .on("error", gutil.log);
 });
