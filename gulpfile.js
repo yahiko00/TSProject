@@ -18,6 +18,7 @@ const runSequence = require("run-sequence");
 const tape = require("gulp-tape");
 const through = require("through2");
 const fs = require("fs");
+const merge = require("merge2");
 
 const debug = settings.debug === true;
 
@@ -57,11 +58,17 @@ gulp.task("compile", () => {
     }
 
     let tsProject = ts.createProject(config);
-    return tsProject.src()
+    const tsResult = tsProject.src()
         .pipe(gulpif(debug, sourcemaps.init()))
-        .pipe(tsProject()).js
-        .pipe(gulpif(debug, sourcemaps.write()))
-        .pipe(gulp.dest(dest))
+        .pipe(tsProject());
+
+    return merge([
+        tsResult.js
+            .pipe(gulpif(debug, sourcemaps.write()))
+            .pipe(gulp.dest(dest)),
+        tsResult.dts
+            .pipe(rename("index.d.ts"))
+            .pipe(gulp.dest(dest))])
         .on("error", gutil.log);
 });
 
