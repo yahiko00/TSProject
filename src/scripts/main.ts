@@ -1,4 +1,4 @@
-// app.ts
+// main.ts
 
 import random = require("./module");
 
